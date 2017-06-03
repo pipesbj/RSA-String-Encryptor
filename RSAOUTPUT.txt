@@ -1,0 +1,17 @@
+Enter p-value: 51
+expect p-value to be a prime
+Enter p-value: 41
+Enter q-value: 29
+Enter String (6 or less characters): im ben
+messsage: 1188 (original +  -121381717043397 )
+pval:  41 
+qVal:  29 
+nVal:  1189 
+Phi(n):  1120 
+public key(e, n): ( 157   1189 )
+private key(d, n): ( 1013   1189 )
+initial text:  im ben
+initial input:  121381717044585
+encrypted input:  1188
+decrypted input:  121381717044585
+decrypted text:  im ben
