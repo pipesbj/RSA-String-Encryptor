@@ -126,40 +126,84 @@ def main():
             validD = 1;
 
     testStr = str(input("Enter String (6 or less characters): "));
-    #testStr = "hey";    #the test message.
+    strArr = list(testStr); #store user input as char array
     
     padInt = 0;
+    strLen = len(strArr);
 
-    testb = testStr.encode();   #encode the message to bytes
-    testInt = int.from_bytes(testb, sys.byteorder); #bytes to int
-    
-    #determine whether padding is needed or not
-    if(gcd(testInt,nVal) != 1 or (testInt > nVal)):
-        #if the test message is not coprime to n
-        #or if test message is bigger than mod value
-        padInt = pad(testInt,nVal);   #generate the pad needed
+    #traverse the string, turn into byte array
+    for i in range(strLen):
+        strArr[i] = strArr[i].encode();
 
-    testInt = testInt + padInt;   
-    #test = test + padInt;
-    print("messsage:",testInt, "(original + ", padInt,")");
-    eMsg = pow(testInt,eVal,nVal);     #encrypt the message
+    #=======================
+   # testb = testStr.encode();   #encode the message to bytes
+   # testInt = int.from_bytes(testb, sys.byteorder); #bytes to int
+    #========================
     
-    dMsgInt = pow(eMsg,dVal,nVal);  #decrypt the message    
-    dMsgIntReal = dMsgInt - padInt;   #pad the message before turning into bytes
+    strArri = [];   #holds the int values for each byte
+    padArri = [];   #holds the pad value for each int
+    eMsgArr = [];   #holds the encrypted values for each int
+    dMsgArr = [];   #holds the decrypted values for each int
+    dMsgArra = [];  #holds the actual values after padding operations
+    dMsgArrb = [];  #holds the decrypted values as bytes
+    dMsgStr = [];   #holds the decrypted values as chars
+    #store the values as ints in an array
+    for k in range(strLen):
+        padArri.append(0); #fill pad array with zeros
+        eMsgArr.append(0); #fill encrypted values with zero
+        dMsgArr.append(0); #fill decrypted values with zero;
+        dMsgArra.append(0);
+        dMsgArrb.append(b'z');
+        dMsgStr.append(b'z');
+        strArri.append(int.from_bytes(strArr[k], sys.byteorder));
+
+    for j in range(strLen):
+        #determine whether padding is needed or not
+        if(gcd(strArri[j],nVal) != 1 or (strArri[j] > nVal)):
+            #if the test message is not coprime to n
+            #or if test message is bigger than mod value
+            padArri[j] = pad(strArri[j],nVal);   #generate the pad needed
+        strArri[j] = strArri[j] + padArri[j];
+        eMsgArr[j] = pow(strArri[j], eVal, nVal); #encrypt the int
+        dMsgArr[j] = pow(eMsgArr[j], dVal, nVal); #decrypt the int
+        dMsgArra[j] = dMsgArr[j] - padArri[j];     #apply the pad value
+        dMsgArrb[j] = dMsgArra[j].to_bytes(dMsgArr[j].bit_length(), sys.byteorder);
+        dMsgStr[j] = dMsgArrb[j].decode(); 
+
+        #==============================
+    #eMsg = pow(testInt,eVal,nVal);     #encrypt the message
     
-    dMsgb = dMsgIntReal.to_bytes(dMsgInt.bit_length(), sys.byteorder); #convert decrypted int to bytes
-    dMsgStr = dMsgb.decode();
+    #dMsgInt = pow(eMsg,dVal,nVal);  #decrypt the message    
+    #dMsgIntReal = dMsgInt - padInt;   #pad the message before turning into bytes
+        #==============================
     
+   # dMsgb = dMsgIntReal.to_bytes(dMsgInt.bit_length(), sys.byteorder); #convert decrypted int to bytes
+    #dMsgStr = dMsgb.decode();
+        #=============================
     
     #************display all the necessary information.***********************
     print("pval: ", pVal, "\nqVal: ", qVal, "\nnVal: ", nVal, "\nPhi(n): ", tot,
          "\npublic key(e, n): (", eVal," ", nVal,
           ")\nprivate key(d, n): (", dVal," ", nVal,")");
-    print("initial text: ", testStr);
-    print("initial input: ",testInt - padInt);
-    print("encrypted input: ",eMsg);
-    print("decrypted input: ",dMsgInt - padInt);
-    print("decrypted text: ", dMsgStr);
-          
+    
+    print("initial text: ");
+    for i in range(strLen):
+        print(strArr[i],end=' ');
+        
+    print("\ninitial input: ");
+    for i in range(strLen):
+        print(strArri[i] - padArri[j],end=' ');
+        
+    print("\nencrypted input: ");
+    for i in range(strLen):
+        print(eMsgArr[i],end=' ');
+            
+    print("\ndecrypted input: ");
+    for i in range(strLen):
+        print(dMsgArr[i],end=' ');
+        
+    print("\ndecrypted text: ");
+    for i in range(strLen):
+        print(dMsgStr[i],end='');
+    
 main();
-
